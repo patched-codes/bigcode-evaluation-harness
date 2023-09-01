@@ -195,16 +195,6 @@ class HumanEvalPack(Task):
             else: return doc["declaration"]
 
     def get_prompt(self, prompt_base, instruction, context=None):
-        if self.prompt == "patchedcoder":
-            prompt = f"""### Instruction:
-{instruction}
-
-### Input:
-{context}
-
-### Response:
-{prompt_base}
-"""
         if context is None:
             inp = instruction
         # `Context first then instruction` methods
@@ -235,6 +225,18 @@ class HumanEvalPack(Task):
             prompt = f'Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{inp}\n\n### Response:\n{prompt_base}'
         elif self.prompt == "codellama":
             prompt = f"[INST] {inp.strip()} [/INST] {prompt_base}"
+        elif self.prompt == "patchedcoder":
+            if context is None:
+                context = ""
+            prompt = f"""### Instruction:
+{instruction}
+
+### Input:
+{context}
+
+### Response:
+{prompt_base}
+"""
         else:
             raise NotImplementedError
         # Strip off the final \n to make the tokens more natural
