@@ -225,6 +225,16 @@ class HumanEvalPack(Task):
             prompt = f'Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\n{inp}\n\n### Response:\n{prompt_base}'
         elif self.prompt == "codellama":
             prompt = f"[INST] {inp.strip()} [/INST] {prompt_base}"
+        elif self.prompt == "patchedcoder":
+            prompt = f"""### Instruction:
+{inp}
+
+### Input:
+{context}
+
+### Response:
+{prompt_base}
+"""
         else:
             raise NotImplementedError
         # Strip off the final \n to make the tokens more natural
@@ -504,6 +514,16 @@ class HumanEvalFixBase(HumanEvalPackGenerative):
         elif self.prompt == "diff-carper":
             prompt = f"<NME> {self.get_filename_with_extension(input_file=doc['entry_point'])}\n"
             prompt += f"<BEF> {context}\n<MSG> {instruction}\n<DFF>"
+        elif self.prompt == "patchedcoder":
+            prompt = f"""### Instruction:
+{instruction}
+
+### Input:
+{context}
+
+### Response:
+{prompt_base}
+"""
         else:
             prompt = super().get_prompt(prompt_base, instruction, context)
         return prompt.strip()
